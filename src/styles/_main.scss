@@ -28,3 +28,7 @@ $input-shadow: none;
 // Import only what you need from Bulma
 @import '~bulma/bulma.sass';
 @import './dark-mode';
+
+#root {
+    min-height: 100vh;
+}

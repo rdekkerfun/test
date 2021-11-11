@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import '../styles/_app.scss';
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false)
+
+  const handleDarkMode = () => {
+    document.getElementById('root').className = '';
+    setDarkMode(!darkMode)
+    if (darkMode === true) {
+      document.getElementById('root').className = '';
+    } else {
+      document.getElementById('root').className = 'dark-mode';
+    }
+  }
+
   return (
     <div className="app">
       <div className="level">
@@ -12,8 +24,11 @@ function App() {
         </div>
 
         {/* --The button that should toggle dark mode-- */}
-        <button className="app__dark-mode-btn icon level-right">
-          <FontAwesomeIcon icon={faMoon} />
+        <button
+          className="app__dark-mode-btn icon level-right"
+          onClick={handleDarkMode}
+        >
+          <FontAwesomeIcon color={darkMode ? '#FFA500' : '#000000'} icon={darkMode ? faSun : faMoon} />
         </button>
 
       </div>
@@ -41,8 +56,8 @@ function App() {
 
       <section className="section">
         <div className="buttons level-right">
-          <a className="button is-primary">Save</a>
-          <a className="button is-link">Submit</a>
+          <button type="button" className="button is-primary">Save</button>
+          <button type="submit" className="button is-link">Submit</button>
         </div>
       </section>
     </div>
