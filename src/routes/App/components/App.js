@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import '../styles/_app.scss';
+import axios from 'axios';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
-
+  const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const handleDarkMode = () => {
     document.getElementById('root').className = '';
     setDarkMode(!darkMode)
@@ -15,6 +18,21 @@ function App() {
       document.getElementById('root').className = 'dark-mode';
     }
   }
+
+  useEffect(() => {
+    const loadCities = async () => {
+      setLoading(true);
+      const response = await axios.get(
+        "https://api-prod.workhorsescs.pro/api/taxes"
+      );
+      setCities(response.data.data);
+      setLoading(false);
+    };
+
+    loadCities();
+  }, []);
+
+  console.log(cities)
 
   return (
     <div className="app">
@@ -54,6 +72,46 @@ function App() {
         </div>
       </div>
 
+      <div className="field">
+        <div className="control">
+          <input
+            className="input"
+            type="text"
+            placeholder="Search Zip code"
+            onChange={e => {
+              setSearchTerm(e.target.value)
+            }} />
+        </div>
+      </div>
+
+      {loading ?
+        <h4>Loading ...</h4>
+        :
+        <div class="select">
+          <select>
+            {cities
+              .filter((value) => {
+                if (searchTerm === "") {
+                  return '';
+                } else if (
+                  value.zip_code.toLowerCase().includes(searchTerm.toLowerCase())
+                ) {
+                  return value;
+                } else if (
+                  value.city.toLowerCase().includes(searchTerm.toLowerCase())
+                ) {
+                  return value;
+                }
+                else if (
+                  value.state.toLowerCase().includes(searchTerm.toLowerCase())
+                ) {
+                  return value;
+                }
+              })
+              .map((item) => <option key={item.zip_code}>{item.zip_code}, {item.city}, {item.state}</option>)}
+          </select>
+        </div>
+      }
       <section className="section">
         <div className="buttons level-right">
           <button type="button" className="button is-primary">Save</button>
